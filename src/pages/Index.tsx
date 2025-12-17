@@ -10,6 +10,8 @@ import Icon from '@/components/ui/icon';
 
 export default function Index() {
   const [activeSection, setActiveSection] = useState('library');
+  const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
+  const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
 
   const habits = [
     { name: 'Утренняя зарядка', progress: 85, streak: 12 },
@@ -19,9 +21,54 @@ export default function Index() {
   ];
 
   const workouts = [
-    { title: 'HIIT тренировка', duration: '20 мин', level: 'Средний', category: 'Кардио' },
-    { title: 'Йога для спины', duration: '30 мин', level: 'Начальный', category: 'Гибкость' },
-    { title: 'Силовая тренировка', duration: '45 мин', level: 'Продвинутый', category: 'Сила' },
+    { 
+      id: 0,
+      title: 'HIIT тренировка', 
+      duration: '20 мин', 
+      level: 'Средний', 
+      category: 'Кардио',
+      description: 'Высокоинтенсивная интервальная тренировка для сжигания калорий',
+      calories: 280,
+      exercises: [
+        { name: 'Прыжки с разведением', duration: '45 сек', rest: '15 сек' },
+        { name: 'Бёрпи', duration: '45 сек', rest: '15 сек' },
+        { name: 'Высокие колени', duration: '45 сек', rest: '15 сек' },
+        { name: 'Планка', duration: '45 сек', rest: '15 сек' },
+      ],
+      videoPlaceholder: true
+    },
+    { 
+      id: 1,
+      title: 'Йога для спины', 
+      duration: '30 мин', 
+      level: 'Начальный', 
+      category: 'Гибкость',
+      description: 'Комплекс упражнений для укрепления и расслабления спины',
+      calories: 150,
+      exercises: [
+        { name: 'Поза кошки-коровы', duration: '2 мин', rest: '30 сек' },
+        { name: 'Поза ребенка', duration: '3 мин', rest: '30 сек' },
+        { name: 'Скрутка лежа', duration: '2 мин', rest: '30 сек' },
+        { name: 'Поза собаки мордой вниз', duration: '2 мин', rest: '30 сек' },
+      ],
+      videoPlaceholder: true
+    },
+    { 
+      id: 2,
+      title: 'Силовая тренировка', 
+      duration: '45 мин', 
+      level: 'Продвинутый', 
+      category: 'Сила',
+      description: 'Комплексная силовая тренировка на все группы мышц',
+      calories: 380,
+      exercises: [
+        { name: 'Приседания', duration: '3 подхода × 12', rest: '60 сек' },
+        { name: 'Отжимания', duration: '3 подхода × 15', rest: '60 сек' },
+        { name: 'Выпады', duration: '3 подхода × 10', rest: '60 сек' },
+        { name: 'Планка с подъемом рук', duration: '3 подхода × 30 сек', rest: '60 сек' },
+      ],
+      videoPlaceholder: true
+    },
   ];
 
   const meals = [
@@ -181,25 +228,158 @@ export default function Index() {
                     <p className="text-gray-600">Персонализированные программы под ваш уровень</p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {workouts.map((workout, i) => (
-                      <Card key={i} className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer hover-scale">
-                        <div className="flex items-center justify-between mb-4">
-                          <Badge>{workout.category}</Badge>
-                          <Badge variant="outline">{workout.level}</Badge>
+                  {selectedWorkout === null ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {workouts.map((workout, i) => (
+                        <Card key={i} className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer hover-scale">
+                          <div className="flex items-center justify-between mb-4">
+                            <Badge>{workout.category}</Badge>
+                            <Badge variant="outline">{workout.level}</Badge>
+                          </div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-3">{workout.title}</h3>
+                          <p className="text-sm text-gray-600 mb-4">{workout.description}</p>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                            <span className="flex items-center gap-1">
+                              <Icon name="Clock" size={16} />
+                              {workout.duration}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Icon name="Flame" size={16} />
+                              {workout.calories} ккал
+                            </span>
+                          </div>
+                          <Button 
+                            className="w-full"
+                            onClick={() => setSelectedWorkout(i)}
+                          >
+                            <Icon name="Play" size={18} className="mr-2" />
+                            Начать
+                          </Button>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => setSelectedWorkout(null)}
+                        className="mb-4"
+                      >
+                        <Icon name="ArrowLeft" size={18} className="mr-2" />
+                        Назад к тренировкам
+                      </Button>
+
+                      <Card className="p-8">
+                        <div className="flex items-start justify-between mb-6">
+                          <div>
+                            <div className="flex items-center gap-3 mb-3">
+                              <Badge>{workouts[selectedWorkout].category}</Badge>
+                              <Badge variant="outline">{workouts[selectedWorkout].level}</Badge>
+                            </div>
+                            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                              {workouts[selectedWorkout].title}
+                            </h2>
+                            <p className="text-gray-600 mb-4">{workouts[selectedWorkout].description}</p>
+                            <div className="flex items-center gap-6 text-sm text-gray-600">
+                              <span className="flex items-center gap-2">
+                                <Icon name="Clock" size={18} />
+                                {workouts[selectedWorkout].duration}
+                              </span>
+                              <span className="flex items-center gap-2">
+                                <Icon name="Flame" size={18} />
+                                {workouts[selectedWorkout].calories} ккал
+                              </span>
+                              <span className="flex items-center gap-2">
+                                <Icon name="Target" size={18} />
+                                {workouts[selectedWorkout].exercises.length} упражнений
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-3">{workout.title}</h3>
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Icon name="Clock" size={18} />
-                          <span>{workout.duration}</span>
+
+                        <div className="bg-gray-900 rounded-lg aspect-video mb-6 flex items-center justify-center">
+                          <div className="text-center text-white">
+                            <Icon name="Play" size={64} className="mx-auto mb-4 opacity-70" />
+                            <p className="text-lg opacity-70">Видео тренировки</p>
+                          </div>
                         </div>
-                        <Button className="w-full mt-4">
-                          <Icon name="Play" size={18} className="mr-2" />
-                          Начать
-                        </Button>
+
+                        <div className="space-y-4 mb-6">
+                          <h3 className="text-xl font-semibold text-gray-900 mb-4">Упражнения</h3>
+                          {workouts[selectedWorkout].exercises.map((exercise, idx) => (
+                            <Card key={idx} className="p-4 bg-gray-50">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-semibold">
+                                    {idx + 1}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">{exercise.name}</h4>
+                                    <p className="text-sm text-gray-600">
+                                      {exercise.duration} • Отдых {exercise.rest}
+                                    </p>
+                                  </div>
+                                </div>
+                                <Button 
+                                  variant={workoutProgress.includes(idx) ? "secondary" : "outline"}
+                                  size="sm"
+                                  onClick={() => {
+                                    if (workoutProgress.includes(idx)) {
+                                      setWorkoutProgress(workoutProgress.filter(i => i !== idx));
+                                    } else {
+                                      setWorkoutProgress([...workoutProgress, idx]);
+                                    }
+                                  }}
+                                >
+                                  {workoutProgress.includes(idx) ? (
+                                    <>
+                                      <Icon name="Check" size={16} className="mr-1" />
+                                      Готово
+                                    </>
+                                  ) : (
+                                    'Отметить'
+                                  )}
+                                </Button>
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+
+                        <div className="mb-6">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-gray-700">Прогресс тренировки</span>
+                            <span className="text-sm font-medium text-emerald-600">
+                              {workoutProgress.length} / {workouts[selectedWorkout].exercises.length}
+                            </span>
+                          </div>
+                          <Progress 
+                            value={(workoutProgress.length / workouts[selectedWorkout].exercises.length) * 100} 
+                            className="h-3"
+                          />
+                        </div>
+
+                        <div className="flex gap-4">
+                          <Button 
+                            className="flex-1"
+                            disabled={workoutProgress.length !== workouts[selectedWorkout].exercises.length}
+                            onClick={() => {
+                              setWorkoutProgress([]);
+                              setSelectedWorkout(null);
+                            }}
+                          >
+                            <Icon name="CheckCircle" size={18} className="mr-2" />
+                            Завершить тренировку
+                          </Button>
+                          <Button variant="outline">
+                            <Icon name="Heart" size={18} />
+                          </Button>
+                          <Button variant="outline">
+                            <Icon name="Share2" size={18} />
+                          </Button>
+                        </div>
                       </Card>
-                    ))}
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
 
