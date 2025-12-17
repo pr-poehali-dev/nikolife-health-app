@@ -187,28 +187,58 @@ export default function Index() {
                   </div>
 
                   <div className="grid md:grid-cols-4 gap-6">
-                    <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-500 text-white hover-scale cursor-pointer">
-                      <Icon name="Flame" size={28} className="mb-3 opacity-90" />
-                      <p className="text-3xl font-bold mb-1">1,240</p>
-                      <p className="text-sm opacity-90">Калорий сожжено</p>
+                    <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-500 text-white hover-scale cursor-pointer relative overflow-hidden">
+                      <div className="relative z-10">
+                        <Icon name="Flame" size={28} className="mb-3 opacity-90" />
+                        <p className="text-3xl font-bold mb-1">1,240</p>
+                        <p className="text-sm opacity-90">Калорий сожжено</p>
+                      </div>
+                      <div className="absolute bottom-0 right-0 w-32 h-32 opacity-20">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                          <circle cx="50" cy="50" r="40" fill="none" stroke="white" strokeWidth="8" strokeDasharray="251.2" strokeDashoffset="75.36" transform="rotate(-90 50 50)" />
+                        </svg>
+                      </div>
                     </Card>
 
-                    <Card className="p-6 bg-gradient-to-br from-blue-500 to-cyan-500 text-white hover-scale cursor-pointer">
-                      <Icon name="Footprints" size={28} className="mb-3 opacity-90" />
-                      <p className="text-3xl font-bold mb-1">8,450</p>
-                      <p className="text-sm opacity-90">Шагов сегодня</p>
+                    <Card className="p-6 bg-gradient-to-br from-blue-500 to-cyan-500 text-white hover-scale cursor-pointer relative overflow-hidden">
+                      <div className="relative z-10">
+                        <Icon name="Footprints" size={28} className="mb-3 opacity-90" />
+                        <p className="text-3xl font-bold mb-1">8,450</p>
+                        <p className="text-sm opacity-90">Шагов сегодня</p>
+                      </div>
+                      <div className="absolute bottom-2 right-2 flex gap-1 opacity-20">
+                        <div className="w-2 h-16 bg-white rounded-full"></div>
+                        <div className="w-2 h-20 bg-white rounded-full"></div>
+                        <div className="w-2 h-12 bg-white rounded-full"></div>
+                        <div className="w-2 h-24 bg-white rounded-full"></div>
+                        <div className="w-2 h-18 bg-white rounded-full"></div>
+                      </div>
                     </Card>
 
-                    <Card className="p-6 bg-gradient-to-br from-purple-500 to-pink-500 text-white hover-scale cursor-pointer">
-                      <Icon name="Heart" size={28} className="mb-3 opacity-90" />
-                      <p className="text-3xl font-bold mb-1">78</p>
-                      <p className="text-sm opacity-90">Пульс (уд/мин)</p>
+                    <Card className="p-6 bg-gradient-to-br from-purple-500 to-pink-500 text-white hover-scale cursor-pointer relative overflow-hidden">
+                      <div className="relative z-10">
+                        <Icon name="Heart" size={28} className="mb-3 opacity-90" />
+                        <p className="text-3xl font-bold mb-1">78</p>
+                        <p className="text-sm opacity-90">Пульс (уд/мин)</p>
+                      </div>
+                      <div className="absolute bottom-0 right-0 w-full h-16 opacity-20">
+                        <svg viewBox="0 0 200 60" className="w-full h-full" preserveAspectRatio="none">
+                          <path d="M0,30 Q10,30 20,15 T40,30 T60,30 Q70,30 80,15 T100,30 T120,30 Q130,30 140,15 T160,30 T180,30 Q190,30 200,15" fill="none" stroke="white" strokeWidth="3" />
+                        </svg>
+                      </div>
                     </Card>
 
-                    <Card className="p-6 bg-gradient-to-br from-amber-500 to-orange-500 text-white hover-scale cursor-pointer">
-                      <Icon name="Trophy" size={28} className="mb-3 opacity-90" />
-                      <p className="text-3xl font-bold mb-1">21</p>
-                      <p className="text-sm opacity-90">Дней подряд</p>
+                    <Card className="p-6 bg-gradient-to-br from-amber-500 to-orange-500 text-white hover-scale cursor-pointer relative overflow-hidden">
+                      <div className="relative z-10">
+                        <Icon name="Trophy" size={28} className="mb-3 opacity-90" />
+                        <p className="text-3xl font-bold mb-1">21</p>
+                        <p className="text-sm opacity-90">Дней подряд</p>
+                      </div>
+                      <div className="absolute bottom-2 right-2 grid grid-cols-5 gap-1 opacity-20">
+                        {[...Array(15)].map((_, i) => (
+                          <div key={i} className="w-3 h-3 bg-white rounded-sm"></div>
+                        ))}
+                      </div>
                     </Card>
                   </div>
 
@@ -223,8 +253,8 @@ export default function Index() {
                       </div>
                       <div className="space-y-4">
                         {habits.slice(0, 3).map((habit, i) => (
-                          <div key={i} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                            <div className="flex items-center justify-between mb-3">
+                          <div key={i} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors relative overflow-hidden">
+                            <div className="flex items-center justify-between mb-3 relative z-10">
                               <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
                                   <Icon name="Check" size={18} className="text-emerald-600" />
@@ -239,7 +269,12 @@ export default function Index() {
                                 {habit.streak}
                               </Badge>
                             </div>
-                            <Progress value={habit.progress} className="h-2" />
+                            <div className="relative">
+                              <Progress value={habit.progress} className="h-2 relative z-10" />
+                              <div className="absolute -top-8 right-0 text-5xl font-bold text-emerald-100 select-none pointer-events-none">
+                                {habit.progress}%
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -316,33 +351,38 @@ export default function Index() {
                         {workouts.slice(0, 2).map((workout, i) => (
                           <div 
                             key={i} 
-                            className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                            className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-all cursor-pointer relative overflow-hidden group"
                             onClick={() => {
                               setActiveSection('workouts');
                               setSelectedWorkout(i);
                             }}
                           >
-                            <div className="flex items-center justify-between mb-2">
-                              <Badge variant="secondary">{workout.category}</Badge>
-                              <Badge variant="outline">{workout.level}</Badge>
+                            <div className="absolute top-0 right-0 w-32 h-32 opacity-5 group-hover:opacity-10 transition-opacity">
+                              <Icon name="Dumbbell" size={128} className="text-emerald-600" />
                             </div>
-                            <h4 className="font-semibold text-gray-900 mb-2">{workout.title}</h4>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                              <span className="flex items-center gap-1">
-                                <Icon name="Clock" size={14} />
-                                {workout.duration}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Icon name="Flame" size={14} />
-                                {workout.calories} ккал
-                              </span>
+                            <div className="relative z-10">
+                              <div className="flex items-center justify-between mb-2">
+                                <Badge variant="secondary">{workout.category}</Badge>
+                                <Badge variant="outline">{workout.level}</Badge>
+                              </div>
+                              <h4 className="font-semibold text-gray-900 mb-2">{workout.title}</h4>
+                              <div className="flex items-center gap-4 text-sm text-gray-600">
+                                <span className="flex items-center gap-1">
+                                  <Icon name="Clock" size={14} />
+                                  {workout.duration}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Icon name="Flame" size={14} />
+                                  {workout.calories} ккал
+                                </span>
+                              </div>
                             </div>
                           </div>
                         ))}
                       </div>
                     </Card>
 
-                    <Card className="p-6">
+                    <Card className="p-6 relative overflow-hidden">
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-semibold text-gray-900">Питание на сегодня</h3>
                         <Button 
@@ -355,25 +395,37 @@ export default function Index() {
                         </Button>
                       </div>
                       
-                      <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg mb-4">
-                        <div className="flex items-center justify-between">
+                      <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg mb-4 relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-10">
+                          <div className="absolute top-2 left-2 w-20 h-20 border-4 border-emerald-300 rounded-full"></div>
+                          <div className="absolute bottom-2 right-2 w-16 h-16 border-4 border-teal-300 rounded-full"></div>
+                        </div>
+                        <div className="flex items-center justify-between relative z-10">
                           <div>
                             <p className="text-sm text-gray-600 mb-1">Осталось калорий</p>
                             <p className="text-2xl font-bold text-gray-900">610 ккал</p>
                           </div>
-                          <div className="text-right">
-                            <p className="text-sm text-gray-600 mb-1">Из 1850</p>
-                            <Progress value={67} className="w-24 h-2" />
+                          <div className="relative w-20 h-20">
+                            <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                              <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" strokeWidth="8" />
+                              <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" strokeWidth="8" strokeDasharray="251.2" strokeDashoffset="83" className="transition-all duration-500" />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-sm font-bold text-gray-900">67%</span>
+                            </div>
                           </div>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         {meals.slice(0, 2).map((meal, i) => (
-                          <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                              <p className="font-semibold text-gray-900 text-sm">{meal.name}</p>
-                              <p className="text-xs text-gray-600">{meal.time}</p>
+                          <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div className="flex items-center gap-3">
+                              <div className="w-2 h-8 bg-emerald-500 rounded-full"></div>
+                              <div>
+                                <p className="font-semibold text-gray-900 text-sm">{meal.name}</p>
+                                <p className="text-xs text-gray-600">{meal.time}</p>
+                              </div>
                             </div>
                             <p className="text-sm font-semibold text-gray-900">{meal.calories} ккал</p>
                           </div>
