@@ -12,6 +12,8 @@ export default function Index() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
   const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
+  const [selectedRecipe, setSelectedRecipe] = useState<number | null>(null);
+  const [mealPlan, setMealPlan] = useState<{[key: string]: number}>({});
 
   const habits = [
     { name: 'Утренняя зарядка', progress: 85, streak: 12 },
@@ -71,11 +73,88 @@ export default function Index() {
     },
   ];
 
-  const meals = [
-    { name: 'Овсянка с ягодами', calories: 320, protein: 12, time: 'Завтрак' },
-    { name: 'Куриный салат', calories: 450, protein: 35, time: 'Обед' },
-    { name: 'Лосось с овощами', calories: 520, protein: 42, time: 'Ужин' },
+  const recipes = [
+    { 
+      id: 0,
+      name: 'Овсянка с ягодами', 
+      calories: 320, 
+      protein: 12, 
+      carbs: 54,
+      fats: 6,
+      time: 'Завтрак',
+      cookTime: '10 мин',
+      difficulty: 'Легко',
+      ingredients: ['100г овсяных хлопьев', '200мл молока', '50г черники', '50г малины', '1 ст.л. меда'],
+      steps: ['Залейте овсянку молоком и варите 5-7 минут', 'Добавьте ягоды и мед', 'Перемешайте и подавайте теплым']
+    },
+    { 
+      id: 1,
+      name: 'Куриный салат', 
+      calories: 450, 
+      protein: 35, 
+      carbs: 25,
+      fats: 18,
+      time: 'Обед',
+      cookTime: '20 мин',
+      difficulty: 'Средне',
+      ingredients: ['150г куриной грудки', '100г листьев салата', '1 огурец', '1 помидор', 'Оливковое масло', 'Лимонный сок'],
+      steps: ['Отварите или запеките куриную грудку', 'Нарежьте овощи и курицу', 'Смешайте с салатными листьями', 'Заправьте маслом и лимонным соком']
+    },
+    { 
+      id: 2,
+      name: 'Лосось с овощами', 
+      calories: 520, 
+      protein: 42, 
+      carbs: 20,
+      fats: 28,
+      time: 'Ужин',
+      cookTime: '25 мин',
+      difficulty: 'Средне',
+      ingredients: ['200г филе лосося', '150г брокколи', '100г моркови', 'Специи по вкусу', 'Лимон'],
+      steps: ['Запекайте лосось в духовке при 180°C 15 минут', 'Приготовьте овощи на пару', 'Подавайте с лимоном']
+    },
+    { 
+      id: 3,
+      name: 'Греческий йогурт с орехами', 
+      calories: 280, 
+      protein: 18, 
+      carbs: 22,
+      fats: 12,
+      time: 'Завтрак',
+      cookTime: '5 мин',
+      difficulty: 'Легко',
+      ingredients: ['200г греческого йогурта', '30г грецких орехов', '20г миндаля', '1 ст.л. меда', 'Корица'],
+      steps: ['Выложите йогурт в миску', 'Добавьте измельченные орехи', 'Полейте медом и посыпьте корицей']
+    },
+    { 
+      id: 4,
+      name: 'Киноа с овощами', 
+      calories: 380, 
+      protein: 14, 
+      carbs: 58,
+      fats: 10,
+      time: 'Обед',
+      cookTime: '30 мин',
+      difficulty: 'Легко',
+      ingredients: ['100г киноа', '1 болгарский перец', '1 цукини', 'Чеснок', 'Оливковое масло'],
+      steps: ['Отварите киноа согласно инструкции', 'Обжарьте нарезанные овощи с чесноком', 'Смешайте киноа с овощами']
+    },
+    { 
+      id: 5,
+      name: 'Запеченная индейка', 
+      calories: 480, 
+      protein: 45, 
+      carbs: 18,
+      fats: 22,
+      time: 'Ужин',
+      cookTime: '35 мин',
+      difficulty: 'Средне',
+      ingredients: ['200г филе индейки', '150г батата', 'Розмарин', 'Чеснок', 'Оливковое масло'],
+      steps: ['Замаринуйте индейку со специями', 'Запекайте с бататом при 190°C 30 минут', 'Подавайте с зеленью']
+    },
   ];
+
+  const meals = recipes.slice(0, 3);
 
   const articles = [
     { title: 'Основы здорового питания', category: 'Питание', readTime: '5 мин' },
@@ -651,45 +730,289 @@ export default function Index() {
 
               {activeSection === 'nutrition' && (
                 <div className="space-y-6 animate-fade-in">
-                  <div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">План питания</h2>
-                    <p className="text-gray-600">Персональные рекомендации и рецепты</p>
-                  </div>
-
-                  <Card className="p-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-2xl font-bold mb-2">1850 ккал</h3>
-                        <p className="opacity-90">Дневная норма</p>
+                  {selectedRecipe === null ? (
+                    <>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h2 className="text-3xl font-bold text-gray-900 mb-2">План питания</h2>
+                          <p className="text-gray-600">Создайте персональное меню из рецептов</p>
+                        </div>
+                        <Button onClick={() => {
+                          const breakfast = recipes.filter(r => r.time === 'Завтрак')[0]?.id || 0;
+                          const lunch = recipes.filter(r => r.time === 'Обед')[0]?.id || 1;
+                          const dinner = recipes.filter(r => r.time === 'Ужин')[0]?.id || 2;
+                          setMealPlan({ breakfast, lunch, dinner });
+                        }}>
+                          <Icon name="Sparkles" size={18} className="mr-2" />
+                          Сгенерировать меню
+                        </Button>
                       </div>
-                      <div className="text-right">
-                        <h3 className="text-2xl font-bold mb-2">89 г</h3>
-                        <p className="opacity-90">Белка</p>
-                      </div>
-                    </div>
-                  </Card>
 
-                  <div className="space-y-4">
-                    {meals.map((meal, i) => (
-                      <Card key={i} className="p-6 hover:shadow-lg transition-all duration-300">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <Badge variant="secondary" className="mb-2">
-                              {meal.time}
-                            </Badge>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">{meal.name}</h3>
-                            <div className="flex gap-6 text-sm text-gray-600">
-                              <span>{meal.calories} ккал</span>
-                              <span>{meal.protein}г белка</span>
+                      <Card className="p-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                        <div className="grid md:grid-cols-4 gap-6">
+                          <div>
+                            <h3 className="text-2xl font-bold mb-2">1850</h3>
+                            <p className="opacity-90">ккал/день</p>
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-bold mb-2">89г</h3>
+                            <p className="opacity-90">Белков</p>
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-bold mb-2">220г</h3>
+                            <p className="opacity-90">Углеводов</p>
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-bold mb-2">65г</h3>
+                            <p className="opacity-90">Жиров</p>
+                          </div>
+                        </div>
+                      </Card>
+
+                      <Tabs defaultValue="plan" className="w-full">
+                        <TabsList className="mb-6">
+                          <TabsTrigger value="plan">Моё меню</TabsTrigger>
+                          <TabsTrigger value="recipes">Все рецепты</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="plan" className="space-y-4">
+                          {Object.keys(mealPlan).length === 0 ? (
+                            <Card className="p-12 text-center">
+                              <Icon name="UtensilsCrossed" size={64} className="mx-auto text-gray-300 mb-4" />
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2">Создайте своё меню</h3>
+                              <p className="text-gray-600 mb-6">Нажмите "Сгенерировать меню" или выберите рецепты вручную</p>
+                              <Button onClick={() => {
+                                const breakfast = recipes.filter(r => r.time === 'Завтрак')[0]?.id || 0;
+                                const lunch = recipes.filter(r => r.time === 'Обед')[0]?.id || 1;
+                                const dinner = recipes.filter(r => r.time === 'Ужин')[0]?.id || 2;
+                                setMealPlan({ breakfast, lunch, dinner });
+                              }}>
+                                <Icon name="Sparkles" size={18} className="mr-2" />
+                                Сгенерировать меню
+                              </Button>
+                            </Card>
+                          ) : (
+                            <>
+                              {['breakfast', 'lunch', 'dinner'].map((mealType) => {
+                                const recipeId = mealPlan[mealType];
+                                const recipe = recipes.find(r => r.id === recipeId);
+                                if (!recipe) return null;
+                                
+                                return (
+                                  <Card key={mealType} className="p-6 hover:shadow-lg transition-all duration-300">
+                                    <div className="flex items-start justify-between">
+                                      <div className="flex-1">
+                                        <Badge variant="secondary" className="mb-3">
+                                          {recipe.time}
+                                        </Badge>
+                                        <h3 className="text-xl font-semibold text-gray-900 mb-2">{recipe.name}</h3>
+                                        <div className="flex gap-6 text-sm text-gray-600 mb-4">
+                                          <span className="flex items-center gap-1">
+                                            <Icon name="Flame" size={14} />
+                                            {recipe.calories} ккал
+                                          </span>
+                                          <span>Б: {recipe.protein}г</span>
+                                          <span>Ж: {recipe.fats}г</span>
+                                          <span>У: {recipe.carbs}г</span>
+                                          <span className="flex items-center gap-1">
+                                            <Icon name="Clock" size={14} />
+                                            {recipe.cookTime}
+                                          </span>
+                                        </div>
+                                        <div className="flex gap-2">
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setSelectedRecipe(recipe.id)}
+                                          >
+                                            Посмотреть рецепт
+                                          </Button>
+                                          <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            onClick={() => {
+                                              const newPlan = { ...mealPlan };
+                                              delete newPlan[mealType];
+                                              setMealPlan(newPlan);
+                                            }}
+                                          >
+                                            <Icon name="X" size={16} />
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Card>
+                                );
+                              })}
+                              
+                              <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900 mb-1">Итого за день</h4>
+                                    <p className="text-sm text-gray-600">Сбалансированный план питания</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="text-2xl font-bold text-gray-900">
+                                      {Object.values(mealPlan).reduce((sum, id) => {
+                                        const recipe = recipes.find(r => r.id === id);
+                                        return sum + (recipe?.calories || 0);
+                                      }, 0)} ккал
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      Белка: {Object.values(mealPlan).reduce((sum, id) => {
+                                        const recipe = recipes.find(r => r.id === id);
+                                        return sum + (recipe?.protein || 0);
+                                      }, 0)}г
+                                    </p>
+                                  </div>
+                                </div>
+                              </Card>
+                            </>
+                          )}
+                        </TabsContent>
+
+                        <TabsContent value="recipes" className="space-y-4">
+                          <div className="grid md:grid-cols-2 gap-4">
+                            {recipes.map((recipe, i) => (
+                              <Card 
+                                key={i} 
+                                className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                                onClick={() => setSelectedRecipe(i)}
+                              >
+                                <div className="flex items-center justify-between mb-3">
+                                  <Badge variant="secondary">{recipe.time}</Badge>
+                                  <Badge variant="outline">{recipe.difficulty}</Badge>
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">{recipe.name}</h3>
+                                <div className="flex gap-4 text-sm text-gray-600 mb-4">
+                                  <span className="flex items-center gap-1">
+                                    <Icon name="Flame" size={14} />
+                                    {recipe.calories} ккал
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Icon name="Clock" size={14} />
+                                    {recipe.cookTime}
+                                  </span>
+                                </div>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="w-full"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const mealType = recipe.time === 'Завтрак' ? 'breakfast' : recipe.time === 'Обед' ? 'lunch' : 'dinner';
+                                    setMealPlan({ ...mealPlan, [mealType]: recipe.id });
+                                  }}
+                                >
+                                  <Icon name="Plus" size={16} className="mr-1" />
+                                  Добавить в меню
+                                </Button>
+                              </Card>
+                            ))}
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </>
+                  ) : (
+                    <div className="space-y-6">
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => setSelectedRecipe(null)}
+                      >
+                        <Icon name="ArrowLeft" size={18} className="mr-2" />
+                        Назад к плану питания
+                      </Button>
+
+                      <Card className="p-8">
+                        <div className="flex items-start justify-between mb-6">
+                          <div>
+                            <div className="flex items-center gap-3 mb-3">
+                              <Badge>{recipes[selectedRecipe].time}</Badge>
+                              <Badge variant="outline">{recipes[selectedRecipe].difficulty}</Badge>
+                            </div>
+                            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                              {recipes[selectedRecipe].name}
+                            </h2>
+                            <div className="flex items-center gap-6 text-gray-600">
+                              <span className="flex items-center gap-2">
+                                <Icon name="Clock" size={18} />
+                                {recipes[selectedRecipe].cookTime}
+                              </span>
+                              <span className="flex items-center gap-2">
+                                <Icon name="Flame" size={18} />
+                                {recipes[selectedRecipe].calories} ккал
+                              </span>
                             </div>
                           </div>
-                          <Button variant="ghost" size="icon">
-                            <Icon name="ChevronRight" size={20} />
+                        </div>
+
+                        <div className="grid md:grid-cols-4 gap-4 mb-8">
+                          <Card className="p-4 bg-emerald-50">
+                            <p className="text-sm text-gray-600 mb-1">Калории</p>
+                            <p className="text-2xl font-bold text-gray-900">{recipes[selectedRecipe].calories}</p>
+                          </Card>
+                          <Card className="p-4 bg-blue-50">
+                            <p className="text-sm text-gray-600 mb-1">Белки</p>
+                            <p className="text-2xl font-bold text-gray-900">{recipes[selectedRecipe].protein}г</p>
+                          </Card>
+                          <Card className="p-4 bg-amber-50">
+                            <p className="text-sm text-gray-600 mb-1">Жиры</p>
+                            <p className="text-2xl font-bold text-gray-900">{recipes[selectedRecipe].fats}г</p>
+                          </Card>
+                          <Card className="p-4 bg-purple-50">
+                            <p className="text-sm text-gray-600 mb-1">Углеводы</p>
+                            <p className="text-2xl font-bold text-gray-900">{recipes[selectedRecipe].carbs}г</p>
+                          </Card>
+                        </div>
+
+                        <div className="mb-8">
+                          <h3 className="text-xl font-semibold text-gray-900 mb-4">Ингредиенты</h3>
+                          <div className="space-y-2">
+                            {recipes[selectedRecipe].ingredients.map((ingredient, idx) => (
+                              <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                <span className="text-gray-900">{ingredient}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mb-8">
+                          <h3 className="text-xl font-semibold text-gray-900 mb-4">Приготовление</h3>
+                          <div className="space-y-4">
+                            {recipes[selectedRecipe].steps.map((step, idx) => (
+                              <div key={idx} className="flex gap-4">
+                                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-semibold flex-shrink-0">
+                                  {idx + 1}
+                                </div>
+                                <p className="text-gray-900 pt-1">{step}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                          <Button 
+                            className="flex-1"
+                            onClick={() => {
+                              const mealType = recipes[selectedRecipe].time === 'Завтрак' ? 'breakfast' : recipes[selectedRecipe].time === 'Обед' ? 'lunch' : 'dinner';
+                              setMealPlan({ ...mealPlan, [mealType]: recipes[selectedRecipe].id });
+                              setSelectedRecipe(null);
+                            }}
+                          >
+                            <Icon name="Plus" size={18} className="mr-2" />
+                            Добавить в меню
+                          </Button>
+                          <Button variant="outline">
+                            <Icon name="Heart" size={18} />
+                          </Button>
+                          <Button variant="outline">
+                            <Icon name="Share2" size={18} />
                           </Button>
                         </div>
                       </Card>
-                    ))}
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
 
