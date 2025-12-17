@@ -163,9 +163,24 @@ export default function Index() {
   ];
 
   const chats = [
-    { name: 'Группа по йоге', lastMessage: 'Завтра занятие в 10:00', time: '2 мин', unread: 3 },
-    { name: 'Питание и рецепты', lastMessage: 'Отличный рецепт смузи!', time: '1 ч', unread: 0 },
-    { name: 'Поддержка и мотивация', lastMessage: 'Молодцы, продолжайте!', time: '3 ч', unread: 1 },
+    { 
+      id: 0,
+      name: 'Помощник Николай', 
+      lastMessage: 'Здравствуйте! Чем могу помочь с вашим здоровьем?', 
+      time: 'сейчас', 
+      unread: 0,
+      type: 'assistant',
+      description: 'Задайте вопрос по здоровью, тренировкам и питанию'
+    },
+    { 
+      id: 1,
+      name: 'Кухня Nikolife', 
+      lastMessage: 'Поделилась рецептом здорового завтрака!', 
+      time: '15 мин', 
+      unread: 3,
+      type: 'community',
+      description: 'Делитесь рецептами, советами по питанию и обсуждайте кулинарию'
+    },
   ];
 
   return (
@@ -240,7 +255,7 @@ export default function Index() {
               <Icon name="MessageCircle" className="lg:mr-2" size={20} />
               <span className="hidden lg:inline">Чаты</span>
               <Badge className="absolute -top-1 -right-1 lg:relative lg:top-0 lg:right-0 lg:ml-auto px-2 py-0 text-xs">
-                4
+                3
               </Badge>
             </Button>
 
@@ -1074,33 +1089,63 @@ export default function Index() {
               {activeSection === 'chat' && (
                 <div className="space-y-6 animate-fade-in">
                   <div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Чаты и сообщества</h2>
-                    <p className="text-gray-600">Общайтесь, делитесь опытом и находите поддержку</p>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Чаты и поддержка</h2>
+                    <p className="text-gray-600">Получайте помощь от Николая и общайтесь с сообществом</p>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {chats.map((chat, i) => (
-                      <Card key={i} className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer hover-scale">
-                        <div className="flex items-center gap-4">
-                          <Avatar className="h-12 w-12">
-                            <AvatarFallback className="bg-emerald-100 text-emerald-700">
-                              {chat.name[0]}
+                      <Card key={i} className="p-6 hover:shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        
+                        <div className="flex items-start gap-4 relative z-10">
+                          <Avatar className="h-14 w-14 border-2 border-emerald-100">
+                            <AvatarFallback className={chat.type === 'assistant' ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white text-xl' : 'bg-gradient-to-br from-blue-500 to-purple-500 text-white text-xl'}>
+                              {chat.type === 'assistant' ? '🤖' : '👨‍🍳'}
                             </AvatarFallback>
                           </Avatar>
+                          
                           <div className="flex-1">
-                            <div className="flex items-center justify-between mb-1">
-                              <h3 className="font-semibold text-gray-900">{chat.name}</h3>
-                              <span className="text-xs text-gray-500">{chat.time}</span>
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold text-gray-900 text-lg">{chat.name}</h3>
+                                  {chat.type === 'assistant' && (
+                                    <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+                                      <Icon name="Sparkles" size={12} className="mr-1" />
+                                      AI
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-500 mb-2">{chat.description}</p>
+                              </div>
+                              <span className="text-xs text-gray-500 whitespace-nowrap ml-2">{chat.time}</span>
                             </div>
-                            <p className="text-sm text-gray-600">{chat.lastMessage}</p>
+                            
+                            <div className="p-3 bg-gray-50 rounded-lg mb-3">
+                              <p className="text-sm text-gray-700">{chat.lastMessage}</p>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <Button size="sm" className="flex-1">
+                                <Icon name="MessageSquare" size={16} className="mr-2" />
+                                {chat.type === 'assistant' ? 'Задать вопрос' : 'Открыть чат'}
+                              </Button>
+                              {chat.unread > 0 && (
+                                <Badge className="bg-emerald-500 px-3">{chat.unread} новых</Badge>
+                              )}
+                            </div>
                           </div>
-                          {chat.unread > 0 && (
-                            <Badge className="ml-2">{chat.unread}</Badge>
-                          )}
                         </div>
                       </Card>
                     ))}
                   </div>
+
+                  <Card className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 text-center">
+                    <Icon name="Info" size={48} className="mx-auto text-gray-400 mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Чаты скоро заработают</h3>
+                    <p className="text-gray-600 text-sm">Мы работаем над функционалом чатов. Скоро вы сможете общаться с Николаем и участниками сообщества!</p>
+                  </Card>
                 </div>
               )}
 
