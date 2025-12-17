@@ -9,7 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import Icon from '@/components/ui/icon';
 
 export default function Index() {
-  const [activeSection, setActiveSection] = useState('library');
+  const [activeSection, setActiveSection] = useState('dashboard');
   const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
   const [workoutProgress, setWorkoutProgress] = useState<number[]>([]);
 
@@ -100,6 +100,15 @@ export default function Index() {
 
           <nav className="flex-1 space-y-2">
             <Button
+              variant={activeSection === 'dashboard' ? 'default' : 'ghost'}
+              className="w-full justify-start"
+              onClick={() => setActiveSection('dashboard')}
+            >
+              <Icon name="Home" className="lg:mr-2" size={20} />
+              <span className="hidden lg:inline">Главная</span>
+            </Button>
+
+            <Button
               variant={activeSection === 'library' ? 'default' : 'ghost'}
               className="w-full justify-start"
               onClick={() => setActiveSection('library')}
@@ -170,6 +179,211 @@ export default function Index() {
         <main className="flex-1 overflow-hidden">
           <ScrollArea className="h-full">
             <div className="p-8 max-w-7xl mx-auto">
+              {activeSection === 'dashboard' && (
+                <div className="space-y-8 animate-fade-in">
+                  <div>
+                    <h2 className="text-4xl font-bold text-gray-900 mb-2">Добрый день, Анна! 👋</h2>
+                    <p className="text-lg text-gray-600">Сегодня отличный день для новых достижений</p>
+                  </div>
+
+                  <div className="grid md:grid-cols-4 gap-6">
+                    <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-500 text-white hover-scale cursor-pointer">
+                      <Icon name="Flame" size={28} className="mb-3 opacity-90" />
+                      <p className="text-3xl font-bold mb-1">1,240</p>
+                      <p className="text-sm opacity-90">Калорий сожжено</p>
+                    </Card>
+
+                    <Card className="p-6 bg-gradient-to-br from-blue-500 to-cyan-500 text-white hover-scale cursor-pointer">
+                      <Icon name="Footprints" size={28} className="mb-3 opacity-90" />
+                      <p className="text-3xl font-bold mb-1">8,450</p>
+                      <p className="text-sm opacity-90">Шагов сегодня</p>
+                    </Card>
+
+                    <Card className="p-6 bg-gradient-to-br from-purple-500 to-pink-500 text-white hover-scale cursor-pointer">
+                      <Icon name="Heart" size={28} className="mb-3 opacity-90" />
+                      <p className="text-3xl font-bold mb-1">78</p>
+                      <p className="text-sm opacity-90">Пульс (уд/мин)</p>
+                    </Card>
+
+                    <Card className="p-6 bg-gradient-to-br from-amber-500 to-orange-500 text-white hover-scale cursor-pointer">
+                      <Icon name="Trophy" size={28} className="mb-3 opacity-90" />
+                      <p className="text-3xl font-bold mb-1">21</p>
+                      <p className="text-sm opacity-90">Дней подряд</p>
+                    </Card>
+                  </div>
+
+                  <div className="grid lg:grid-cols-3 gap-6">
+                    <Card className="lg:col-span-2 p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-semibold text-gray-900">Привычки на сегодня</h3>
+                        <Button variant="ghost" size="sm">
+                          <Icon name="Plus" size={16} className="mr-1" />
+                          Добавить
+                        </Button>
+                      </div>
+                      <div className="space-y-4">
+                        {habits.slice(0, 3).map((habit, i) => (
+                          <div key={i} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                  <Icon name="Check" size={18} className="text-emerald-600" />
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900">{habit.name}</h4>
+                                  <p className="text-sm text-gray-600">{habit.progress}% выполнено</p>
+                                </div>
+                              </div>
+                              <Badge className="bg-amber-500">
+                                <Icon name="Flame" size={12} className="mr-1" />
+                                {habit.streak}
+                              </Badge>
+                            </div>
+                            <Progress value={habit.progress} className="h-2" />
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+
+                    <Card className="p-6">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-6">Быстрые действия</h3>
+                      <div className="space-y-3">
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start h-auto py-4"
+                          onClick={() => setActiveSection('workouts')}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                              <Icon name="Dumbbell" size={20} className="text-emerald-600" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-semibold text-gray-900">Тренировка</p>
+                              <p className="text-xs text-gray-600">Начать сейчас</p>
+                            </div>
+                          </div>
+                        </Button>
+
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start h-auto py-4"
+                          onClick={() => setActiveSection('nutrition')}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                              <Icon name="Apple" size={20} className="text-blue-600" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-semibold text-gray-900">План питания</p>
+                              <p className="text-xs text-gray-600">На сегодня</p>
+                            </div>
+                          </div>
+                        </Button>
+
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start h-auto py-4"
+                          onClick={() => setActiveSection('mental')}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                              <Icon name="Brain" size={20} className="text-purple-600" />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-semibold text-gray-900">Медитация</p>
+                              <p className="text-xs text-gray-600">15 минут</p>
+                            </div>
+                          </div>
+                        </Button>
+                      </div>
+                    </Card>
+                  </div>
+
+                  <div className="grid lg:grid-cols-2 gap-6">
+                    <Card className="p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-semibold text-gray-900">Рекомендованные тренировки</h3>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setActiveSection('workouts')}
+                        >
+                          Все
+                          <Icon name="ChevronRight" size={16} className="ml-1" />
+                        </Button>
+                      </div>
+                      <div className="space-y-3">
+                        {workouts.slice(0, 2).map((workout, i) => (
+                          <div 
+                            key={i} 
+                            className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                            onClick={() => {
+                              setActiveSection('workouts');
+                              setSelectedWorkout(i);
+                            }}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant="secondary">{workout.category}</Badge>
+                              <Badge variant="outline">{workout.level}</Badge>
+                            </div>
+                            <h4 className="font-semibold text-gray-900 mb-2">{workout.title}</h4>
+                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                              <span className="flex items-center gap-1">
+                                <Icon name="Clock" size={14} />
+                                {workout.duration}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Icon name="Flame" size={14} />
+                                {workout.calories} ккал
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+
+                    <Card className="p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-semibold text-gray-900">Питание на сегодня</h3>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setActiveSection('nutrition')}
+                        >
+                          Подробнее
+                          <Icon name="ChevronRight" size={16} className="ml-1" />
+                        </Button>
+                      </div>
+                      
+                      <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg mb-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">Осталось калорий</p>
+                            <p className="text-2xl font-bold text-gray-900">610 ккал</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm text-gray-600 mb-1">Из 1850</p>
+                            <Progress value={67} className="w-24 h-2" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        {meals.slice(0, 2).map((meal, i) => (
+                          <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                              <p className="font-semibold text-gray-900 text-sm">{meal.name}</p>
+                              <p className="text-xs text-gray-600">{meal.time}</p>
+                            </div>
+                            <p className="text-sm font-semibold text-gray-900">{meal.calories} ккал</p>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  </div>
+                </div>
+              )}
+
               {activeSection === 'library' && (
                 <div className="space-y-6 animate-fade-in">
                   <div>
